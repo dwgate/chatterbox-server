@@ -11,6 +11,11 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
+var path = require('path');
+var url = require('url');
+var messages = {
+  results: []
+};
 
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
@@ -28,9 +33,11 @@ var requestHandler = function(request, response) {
   // debugging help, but you should always be careful about leaving stray
   // console.logs in your code.
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
+
   // The outgoing status.
   var statusCode = 200;
-
+  var parsedUrl = url.parse(request.url);
+  var endPoint = parsedUrl.pathname === '/' ? '/index.html' : parsedUrl.pathname;
   // See the note below about CORS headers.
   var headers = defaultCorsHeaders;
 
@@ -39,25 +46,26 @@ var requestHandler = function(request, response) {
   // You will need to change this if you are sending something
   // other than plain text, like JSON or HTML.
   headers['Content-Type'] = 'text/plain';
-  var what = {results: []};
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
   //
   if (request.method === 'GET') {
-     response.writeHead(statusCode,'sending message', defaultCorsHeaders, what );
-     response.end('get');
+    //check for url to match /classes/messages
+     var msg = JSON.stringify(messages);
+     response.writeHead(statusCode,'sending message', defaultCorsHeaders );
+     response.end(msg);
 
-  } else if (request.method === 'POST') {
-    response.writeHead(statusCode + 1, 'message recieved', defaultCorsHeaders, what);
+ } else if (request.method === 'POST') {
+    response.writeHead(statusCode + 1, 'message recieved', defaultCorsHeaders);
     response.end('Hello, post!');
 
-  } else if (request.method === 'OPTIONS') {
+} else if (request.method === 'OPTIONS') {
     response.writeHead(statusCode, defaultCorsHeaders);
     response.end('did something with options!');
 
   } else {
-    response.writeHead(statusCode + 204, 'invalid request', defaultCorsHeaders, what );
-    response.end('Hello, World!');
+    response.writeHead(404, defaultCorsHeaders);
+    response.end(404);
   }
 
   // response.writeHead(statusCode, headers)
@@ -84,8 +92,7 @@ var defaultCorsHeaders = {
   'access-control-allow-origin': '*',
   'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'access-control-allow-headers': 'content-type, accept',
-  'access-control-max-age': 10,
-  'results': [] // Seconds.
+  'access-control-max-age': 10 // Seconds.
 };
 
 module.exports = requestHandler;
