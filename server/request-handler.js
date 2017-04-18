@@ -36,8 +36,8 @@ var requestHandler = function(request, response) {
 
   // The outgoing status.
   var statusCode = 200;
-  var parsedUrl = url.parse(request.url);
-  var endPoint = parsedUrl.pathname === '/' ? '/index.html' : parsedUrl.pathname;
+  // var parsedUrl = url.parse(request.url);
+  // var endPoint = parsedUrl.pathname === '/' ? '/index.html' : parsedUrl.pathname;
   // See the note below about CORS headers.
   var headers = defaultCorsHeaders;
 
@@ -49,25 +49,92 @@ var requestHandler = function(request, response) {
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
   //
-  if (request.method === 'GET') {
-    //check for url to match /classes/messages
-     var msg = JSON.stringify(messages);
-     response.writeHead(statusCode,'sending message', defaultCorsHeaders );
-     response.end(msg);
 
- } else if (request.method === 'POST') {
-    response.writeHead(statusCode + 1, 'message recieved', defaultCorsHeaders);
-    response.end('Hello, post!');
+var msg = JSON.stringify(messages);
 
-} else if (request.method === 'OPTIONS') {
-    response.writeHead(statusCode, defaultCorsHeaders);
-    response.end('did something with options!');
+if (request.method === 'GET' && request.url === '/classes/messages') {
+  response.writeHead(statusCode, defaultCorsHeaders);
+  response.end(msg);
 
-  } else {
-    response.writeHead(404, defaultCorsHeaders);
-    response.end(404);
-  }
 
+} if (request.method === 'POST' && request.url === '/classes/messages') {
+  // something.on(data, (data) => {
+  // var someshit = JSON.parse(data);
+  // messages.results.push(someshit);
+  // });
+
+  response.writeHead(statusCode + 1, defaultCorsHeaders);
+  response.end(msg);
+
+
+
+
+} if (request.method === 'OPTIONS' && request.url === '/classes/messages') {
+  response.writeHead(statusCode, defaultCorsHeaders);
+  response.end(msg);
+
+
+
+} else {
+  response.writeHead(statusCode + 204, defaultCorsHeaders);
+  response.end('error');
+
+}
+
+///////////////////////////////////////////////////////////////////////
+//   var msg = JSON.stringify(messages);
+//
+//   if (request.url !== '/classes/messages') {
+//     response.writeHead(404, defaultCorsHeaders);
+//     response.end(404);
+//   }
+//
+//
+//   if (request.method === 'GET') {
+//     //check for url to match /classes/messages
+//     if (request.url !== '/classes/messages') {
+//       response.writeHead(404, defaultCorsHeaders);
+//       response.end(404);
+//     } else {
+//      response.writeHead(statusCode, defaultCorsHeaders );
+//      response.end(msg);
+//    }
+//
+//  }
+//
+//
+//  if (request.method === 'POST') {
+//    if (request.url !== '/classes/messages') {
+//      response.writeHead(404, defaultCorsHeaders);
+//      response.end(404);
+//    } else {
+//     var data = JSON.parse(request.data);
+//     messages.results.push( data );
+//
+//     response.writeHead(statusCode + 1, defaultCorsHeaders);
+//     response.end(msg);
+//   }
+//
+// }
+//
+//
+// if (request.method === 'OPTIONS') {
+//   if (request.url !== '/classes/messages') {
+//     response.writeHead(404, defaultCorsHeaders);
+//     response.end(404);
+//   } else {
+//     response.writeHead(statusCode, defaultCorsHeaders);
+//     response.end('did something with options!');
+//   }
+//
+// }
+//
+//
+// if(error){
+//     response.writeHead(404, defaultCorsHeaders);
+//     response.end(404);
+//   }
+//////////////////////////////////////////////////////////////////////////////
   // response.writeHead(statusCode, headers)
 
   // Make sure to always call response.end() - Node may not send
