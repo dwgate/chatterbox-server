@@ -20,7 +20,7 @@ var requestHandler = function(request, response) {
   // and content.
   //
   // Documentation for both request and response can be found in the HTTP section at
-  // http://nodejs.org/documentation/api/
+  //
 
   // Do some basic logging.
   //
@@ -28,7 +28,6 @@ var requestHandler = function(request, response) {
   // debugging help, but you should always be careful about leaving stray
   // console.logs in your code.
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
-
   // The outgoing status.
   var statusCode = 200;
 
@@ -40,10 +39,28 @@ var requestHandler = function(request, response) {
   // You will need to change this if you are sending something
   // other than plain text, like JSON or HTML.
   headers['Content-Type'] = 'text/plain';
-
+  var what = {results: []};
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
-  response.writeHead(statusCode, headers);
+  //
+  if (request.method === 'GET') {
+     response.writeHead(statusCode,'sending message', defaultCorsHeaders, what );
+     response.end('get');
+
+  } else if (request.method === 'POST') {
+    response.writeHead(statusCode + 1, 'message recieved', defaultCorsHeaders, what);
+    response.end('Hello, post!');
+
+  } else if (request.method === 'OPTIONS') {
+    response.writeHead(statusCode, defaultCorsHeaders);
+    response.end('did something with options!');
+
+  } else {
+    response.writeHead(statusCode + 204, 'invalid request', defaultCorsHeaders, what );
+    response.end('Hello, World!');
+  }
+
+  // response.writeHead(statusCode, headers)
 
   // Make sure to always call response.end() - Node may not send
   // anything back to the client until you do. The string you pass to
@@ -54,7 +71,6 @@ var requestHandler = function(request, response) {
   // node to actually send all the data over to the client.
   response.end('Hello, World!');
 };
-
 // These headers will allow Cross-Origin Resource Sharing (CORS).
 // This code allows this server to talk to websites that
 // are on different domains, for instance, your chat client.
@@ -68,6 +84,8 @@ var defaultCorsHeaders = {
   'access-control-allow-origin': '*',
   'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'access-control-allow-headers': 'content-type, accept',
-  'access-control-max-age': 10 // Seconds.
+  'access-control-max-age': 10,
+  'results': [] // Seconds.
 };
 
+module.exports = requestHandler;
