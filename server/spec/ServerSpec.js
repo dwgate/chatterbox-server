@@ -116,4 +116,25 @@ describe('Node Server Request Listener Function', function() {
       });
   });
 
+  it('Should send status code 200 for OPTIONS', function() {
+    var req = new stubs.request('/classes/messages', 'OPTIONS');
+    var res = new stubs.response();
+
+    handler.requestHandler(req, res);
+
+    expect(res._responseCode).to.equal(200);
+    
+  });
+
+  it('Should not return "Hello World" when finished running', function() {
+
+    var req = new stubs.request('/classes/messages', 'GET');
+    var res = new stubs.response();
+
+    handler.requestHandler(req, res);
+    expect(res._data).to.not.equal('Hello World');
+  
+  });
+
+
 });

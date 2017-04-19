@@ -58,13 +58,11 @@ requestHandler = function(request, response) {
 
 
   if (request.method === 'GET' && request.url === '/classes/messages') {
-    console.log('responding to GET request');
     sendResponse(response, messages);
 
 
 
   } else if (request.method === 'POST' && request.url === '/classes/messages') {
-    console.log('responding to POST request');
     var incomingMessage = '';
     request.on('data', function (data) {
       incomingMessage += data;
@@ -87,11 +85,9 @@ requestHandler = function(request, response) {
 
 
   } else {  
-    sendResponse(response, '????', 404);
+    sendResponse(response, 'Hello World', 404);
 
   }
-
-
   // Make sure to always call response.end() - Node may not send
   // anything back to the client until you do. The string you pass to
   // response.end() will be the body of the response - i.e. what shows
@@ -99,7 +95,6 @@ requestHandler = function(request, response) {
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  // response.end('Hello, World!');
 };
 // These headers will allow Cross-Origin Resource Sharing (CORS).
 // This code allows this server to talk to websites that

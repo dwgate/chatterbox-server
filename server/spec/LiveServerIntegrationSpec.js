@@ -56,7 +56,7 @@ describe('server', function() {
     };
 
     request(requestParams, function(error, response, body) {
-      console.log('body: ' + body);
+      
       // Now if we request the log, that message we posted should be there:
       request('http://127.0.0.1:3000/classes/messages', function(error, response, body) {
         var messages = JSON.parse(body).results;
@@ -74,5 +74,40 @@ describe('server', function() {
     });
   });
 
+  it('Should display our supreme competenece.', function(done) {
+    request('http://127.0.0.1:3000/classes/messages', function(error, response, body) {
+  
+      expect(JSON.parse(body).results.length > 1).to.equal(true);
+      done();
+    });
+  });
+
+  it('Should respoon with 200 status code for OPTIONS request', function (done) {
+    var requestParams = {method: 'OPTIONS',
+      uri: 'http://127.0.0.1:3000/classes/messages',
+      json: {
+        username: 'Jono',
+        message: 'Do my bidding!'}
+    };
+    request(requestParams, function(error, response, body) {
+      expect(response.statusCode).to.equal(200);
+      done();
+    });
+  });
+
+  it('Should populate results array with message objects', function(done) {
+    var requestParams = {method: 'GET',
+      uri: 'http://127.0.0.1:3000/classes/messages',
+      json: {
+        username: 'Jono',
+        message: 'Do my bidding!'}
+    };
+
+    request('http://127.0.0.1:3000/classes/messages', function(error, response, body) {
+      var message = JSON.parse(body).results[0];
+      expect(typeof message === 'object').to.equal(true);
+      done();
+    });
+  });
 
 });
