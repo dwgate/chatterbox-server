@@ -57,39 +57,39 @@ requestHandler = function(request, response) {
   };
 
 
-if (request.method === 'GET' && request.url === '/classes/messages') {
-  console.log('responding to GET request');
-  sendResponse(response, messages);
+  if (request.method === 'GET' && request.url === '/classes/messages') {
+    console.log('responding to GET request');
+    sendResponse(response, messages);
 
 
 
-} else if (request.method === 'POST' && request.url === '/classes/messages') {
-  console.log('responding to POST request');
-  var incomingMessage ='';
-  request.on('data', function (data) {
-    incomingMessage += data;
-  });
+  } else if (request.method === 'POST' && request.url === '/classes/messages') {
+    console.log('responding to POST request');
+    var incomingMessage = '';
+    request.on('data', function (data) {
+      incomingMessage += data;
+    });
 
-  request.on('end', function() {
-    var parsedMessage = JSON.parse(incomingMessage);
-    
-    messages.results.push(parsedMessage);
+    request.on('end', function() {
+      var parsedMessage = JSON.parse(incomingMessage);
+      
+      messages.results.push(parsedMessage);
 
-    // sendResponse(response, messages, 201);
-    response.writeHead(201, 'post message', headers);
+      // sendResponse(response, messages, 201);
+      response.writeHead(201, 'post message', headers);
 
-    response.end(JSON.stringify(messages));
-  });
-
-
-} else if (request.method === 'OPTIONS' && request.url === '/classes/messages') {
-  sendResponse(response, null);
+      response.end(JSON.stringify(messages));
+    });
 
 
-} else {  
-  sendResponse(response, '????', 404);
+  } else if (request.method === 'OPTIONS' && request.url === '/classes/messages') {
+    sendResponse(response, null);
 
-}
+
+  } else {  
+    sendResponse(response, '????', 404);
+
+  }
 
 
   // Make sure to always call response.end() - Node may not send
